@@ -1,0 +1,44 @@
+---
+services:
+  speedtest-tracker:
+    image: lscr.io/linuxserver/speedtest-tracker:latest
+    container_name: speedtest-tracker
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Dublin
+      - APP_KEY=${API_KEY}
+      - DB_CONNECTION=sqlite
+      - APP_NAME=Homelab-Speedtest
+      - APP_URL=http://speedtest.cloud.d4rkcyber.xyz
+      - SPEEDTEST_SCHEDULE=*/5 * * * *
+      - DISPLAY_TIMEZONE=Europe/Dublin
+      - PUBLIC_DASHBOARD=true
+      - PRUNE_RESULTS_OLDER_THAN=180 #optional
+    env_file: .env
+    volumes:
+      - ./data:/config
+    ports:
+      - 8045:80
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.speedtest-tracker.rule=Host(`speedtest.cloud.d4rkcyber.xyz`)"
+      - "traefik.http.routers.speedtest-tracker.entrypoints=https"
+      - "traefik.http.routers.speedtest-tracker.tls=true"
+      - "traefik.http.services.speedtest-tracker.loadbalancer.server.port=80"
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
+
+
+#This configuration is for the speedtest-tracker service on docker-compose using traefik as reverse proxy
+#The speedtest-tracker service is used to track the speed of your internet connection
+#Copy and paste this configuration into the speedtest-tracker service in the docker-compose.yaml file
+#Before you spin up, run "mkdir data" in the speedtest-tracker directory
+#Run "docker-compose up -d" in the speedtest-tracker directory
+#Navigate to your-chosen-url to access the speedtest-tracker dashboard
+#```

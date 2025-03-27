@@ -1,0 +1,62 @@
+services:
+  traefik:
+    image: traefik@sha256:cc11989f418e2cfe5e60fc40c92c1813be847f58eda15eced7d5ac890255ad9e
+    container_name: traefik
+    restart: unless-stopped
+    networks:
+      - proxy
+    ports:
+      - 80:80
+      - 443:443
+      - 8082:8082
+      # - 443:443/tcp # Uncomment if you want HTTP3
+      # - 443:443/udp # Uncomment if you want HTTP3
+    environment:
+      CF_DNS_API_TOKEN: ${CF_DNS_API_TOKEN} # if using .env
+      TRAEFIK_DASHBOARD_CREDENTIALS: ${TRAEFIK_DASHBOARD_CREDENTIALS}
+    env_file: .env # use .env
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.yml:/traefik.yml:ro
+      - ./data/acme.json:/acme.json
+      - ./config.yml:/config.yml:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.entrypoints=http"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.cloud.d4rkcyber.xyz`)" # <your-chosen-url>
+      - "traefik.http.middlewares.traefik-auth.basicauth.users=${TRAEFIK_DASHBOARD_CREDENTIALS}"
+      - "traefik.http.middlewares.traefik-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
+      - "traefik.http.routers.traefik.middlewares=traefik-https-redirect"
+      - "traefik.http.routers.traefik-secure.entrypoints=https"
+      - "traefik.http.routers.traefik-secure.rule=Host(`traefik.cloud.d4rkcyber.xyz`)"  # <your-chosen-url>
+      - "traefik.http.routers.traefik-secure.middlewares=traefik-auth"
+      - "traefik.http.routers.traefik-secure.tls=true"
+      - "traefik.http.routers.traefik-secure.tls.certresolver=cloudflare"
+      - "traefik.http.routers.traefik-secure.tls.domains[0].main=cloud.d4rkcyber.xyz"
+      - "traefik.http.routers.traefik-secure.tls.domains[0].sans=*.cloud.d4rkcyber.xyz"
+      - "traefik.http.routers.traefik-secure.service=api@internal"
+      # - "traefik.http.routers.traefik-secure.tls.certresolver=cloudflare"
+      # - "traefik.http.routers.traefik-secure.tls.domains[0].main=warp.d4rkcyber.xyz"
+      # - "traefik.http.routers.traefik-secure.tls.domains[0].sans=*.warp.d4rkcyber.xyz"
+      # - "traefik.http.routers.traefik-secure.service=api@internal"
+
+networks:
+  proxy:
+    external: true
+
+
+# This configuration is for the traefik service on ARM64 - Orace Cloud ARM
+# The traefik service is used to route traffic to other services in the docker-compose file - The traefik service is also used to pull SSL certificates from Let's Encrypt using the Cloudflare DNS challenge
+# Copy and paste this configuration into the traefik service in the docker-compose.yaml file
+# Before you spin up, run "mkdir data && cd data && touch acme.json" in the traefik-cloud directory
+# Run "chmod 600 data/acme.json" in the traefik-cloud directory
+# Copy and paste the traefik.yml and config.yml into the traefik-cloud directory
+
+# Create an .env file in the traefik-cloud directory and add the following:
+# CF_DNS_API_TOKEN=your-cloudflare-api-token
+# TRAEFIK_DASHBOARD_CREDENTIALS=your-username:your-password
+
+# Run "docker-compose up -d" in the traefik-cloud directory
+# Navigate to your-chosen-url to access the traefik dashboard 

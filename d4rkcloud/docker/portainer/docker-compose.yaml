@@ -1,0 +1,34 @@
+
+services:
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce:2.27.1
+    volumes:
+      - ./data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    networks:
+       - proxy
+    labels:
+     - "traefik.enable=true"
+     - "traefik.http.routers.portainer.rule=Host(`portainer.cloud.d4rkcyber.xyz`)" # <your-chosen-url>
+     - "traefik.http.routers.portainer.entrypoints=https"
+     - "traefik.http.routers.portainer.tls=true"
+     - "traefik.http.services.portainer.loadbalancer.server.scheme=https" # for services with self signed certs
+     - "traefik.http.services.portainer.loadbalancer.server.port=9443"
+    ports:
+      - '9443:9443'
+      - '9000:9000'
+
+networks:
+  proxy:
+    name: proxy
+    external: true
+
+
+#This configuration is for the portainer service on docker-compose using traefik as reverse proxy
+#The portainer service is used to manage docker containers and services
+#Copy and paste this configuration into the portainer service in the docker-compose.yaml file
+#Before you spin up, run "mkdir data" in the portainer directory
+#Run "docker-compose up -d" in the portainer directory
+#Navigate to your-chosen-url to access the portainer dashboard
