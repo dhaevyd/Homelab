@@ -1,0 +1,35 @@
+version: '3.5'
+
+services:
+  headscale:
+    container_name: headscale
+    image: headscale/headscale:0.22.3
+    volumes:
+      - ./config:/etc/headscale/  # Configuration files
+      - ./data:/var/lib/headscale # Data persistence
+    ports:
+      - "27896:8080"  # Exposes Headscale on port 27896 of the host
+    command: headscale serve
+    restart: unless-stopped
+    networks:
+      - proxy  # Connect to the 'proxy' network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.headscale.rule=Host(`headscale.d4rkcyber.xyz`)"
+      - "traefik.http.services.headscale.loadbalancer.server.port=8080"
+      - "traefik.http.middlewares.headscale-websocket.headers.customrequestheaders.X-Forwarded-Proto=https"
+      - "traefik.http.routers.headscale.entrypoints=websecure"
+      - "traefik.http.routers.headscale.middlewares=headscale-websocket"
+
+networks:
+  proxy:
+    external: true  # Ensure you're using the external proxy network
+
+
+
+#This compose file will create a headscale container that will be accessible at headscale.cloud.d4rkcyber.xyz.
+#The container will be attached to the existing Traefik network, and the Traefik labels will be used to configure the routing and SSL termination.
+#The headscale container will be accessible on port 27896 on the host machine, and the internal container port is 8080.
+#The configuration files and data will be stored in the ./config and ./data directories, respectively.
+
+# sudo tailscale up --login-server=https://headscale.d4rkcyber.xyz --authkey d951ff82ddc08d75f2bc4c44f5abcbdad0fcf5ec4831319a --force-reauth

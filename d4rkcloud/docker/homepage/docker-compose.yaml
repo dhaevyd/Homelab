@@ -1,0 +1,42 @@
+
+
+services:
+  homepage:
+    container_name: homepage
+    image: ghcr.io/gethomepage/homepage:latest
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.homepage.rule=Host(`homepage.cloud.d4rkcyber.xyz`)"
+      - "traefik.http.routers.homepage.entrypoints=https"
+      - "traefik.http.routers.homepage.tls=true"
+      - "traefik.http.services.homepage.loadbalancer.server.port=3000"
+    networks:
+      - proxy
+    ports:
+      - 3000:3000
+    volumes:
+      - ./config:/app/config
+      - ./images:/app/public/images
+      - ./icons:/app/public/icons
+    env_file: .env
+    environment:
+      - HOMEPAGE_VAR_TRAEFIK_USERNAME=${HOMEPAGE_VAR_TRAEFIK_USERNAME}
+      - HOMEPAGE_VAR_TRAEFIK_PASSWORD=${HOMEPAGE_VAR_TRAEFIK_PASSWORD}
+      - HOMEPAGE_VAR_PORTAINER_KEY=${HOMEPAGE_VAR_PORTAINER_KEY}
+      - HOMEPAGE_VAR_ADGUARD_USERNAME=${HOMEPAGE_VAR_ADGUARD_USERNAME}
+      - HOMEPAGE_VAR_ADGUARD_PASSWORD=${HOMEPAGE_VAR_ADGUARD_PASSWORD}
+      - TZ=Europe/Dublin
+    dns:
+      - 1.1.1.1
+
+networks:
+  proxy:
+    external: true
+
+#This configuration is for the homepage service on docker-compose using traefik as reverse proxy
+#The homepage service is used to manage your homepage
+#Copy and paste this configuration into the homepage service in the docker-compose.yaml file
+
+#Run "docker-compose up -d" in the homepage directory
+#Navigate to your-chosen-url to access the homepage dashboard

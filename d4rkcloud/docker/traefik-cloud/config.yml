@@ -1,0 +1,55 @@
+http:
+ #region routers 
+  routers:
+    portainer:
+      entryPoints:
+        - "https"
+      rule: "Host(`portainer.cloud.d4rkcyber.xyz`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls:
+        certResolver: cloudflare
+      service: portainer
+   
+#endregion
+#region services
+  services:
+    portainer:
+      loadBalancer:
+        servers:
+          - url: "https://129.213.125.251:9443"
+        passHostHeader: true
+
+
+#endregion
+  middlewares:
+    https-redirectscheme:
+      redirectScheme:
+        scheme: https
+        permanent: true
+    default-headers:
+      headers:
+        frameDeny: true
+        browserXssFilter: true
+        contentTypeNosniff: true
+        forceSTSHeader: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 15552000
+        customFrameOptionsValue: SAMEORIGIN
+        customRequestHeaders:
+          X-Forwarded-Proto: https
+
+    default-whitelist:
+      ipAllowList:
+        sourceRange:
+        - "10.0.0.0/8"
+        - "192.168.0.0/16"
+        - "172.16.0.0/12"
+
+    secured:
+      chain:
+        middlewares:
+        - default-whitelist
+        - default-headers
