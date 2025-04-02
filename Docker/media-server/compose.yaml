@@ -1,0 +1,152 @@
+
+services:
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Dublin
+    volumes:
+      - ./radarr_config:/config  # Keep config in the original location
+      - /mnt/wd4tb/media-server/movies:/movies  # Map movies to the new location
+      - ./downloads:/downloads  # Map downloads to the main drive
+    ports:
+      - "192.168.18.19:7878:7878"  # Bind to local IP
+      - "100.72.253.35:7879:7878"  # Bind to Tailscale IP
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.radarr.rule=Host(`radarr.local.d4rkcyber.xyz`)"
+      - "traefik.http.routers.radarr.entrypoints=https"
+      - "traefik.http.routers.radarr.tls=true"
+      - "traefik.http.routers.radarr.tls.certresolver=cloudflare"
+      - "traefik.http.services.radarr.loadbalancer.server.port=7878"
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Dublin
+    volumes:
+      - ./sonarr_config:/config  # Keep config in the original location
+      - /mnt/wd4tb/media-server/shows:/tv  # Map series to the new location
+      - ./downloads:/downloads  # Map downloads to the main drive
+    ports:
+      - "192.168.18.19:8989:8989"  # Bind to local IP
+      - "100.72.253.35:8990:8989"  # Bind to Tailscale IP
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.sonarr.rule=Host(`sonarr.local.d4rkcyber.xyz`)"
+      - "traefik.http.routers.sonarr.entrypoints=https"
+      - "traefik.http.routers.sonarr.tls=true"
+      - "traefik.http.routers.sonarr.tls.certresolver=cloudflare"
+      - "traefik.http.services.sonarr.loadbalancer.server.port=8989"
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Dublin
+    volumes:
+      - ./prowlarr_config:/config
+    ports:
+      - "192.168.18.19:9696:9696"  # Bind to local IP
+      - "100.72.253.35:9697:9696"  # Bind to Tailscale IP
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.local.d4rkcyber.xyz`)"
+      - "traefik.http.routers.prowlarr.entrypoints=https"
+      - "traefik.http.routers.prowlarr.tls=true"
+      - "traefik.http.routers.prowlarr.tls.certresolver=cloudflare"
+      - "traefik.http.services.prowlarr.loadbalancer.server.port=9696"
+
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Dublin
+    volumes:
+      - ./jellyfin_config:/config
+      - /mnt/wd4tb/media-server/shows:/data/tvshows  # Map series to the new location
+      - /mnt/wd4tb/media-server/movies:/data/movies  # Map movies to the new location
+    ports:
+      - "192.168.18.19:8096:8096"  # Bind to local IP
+      - "100.72.253.35:8097:8096"  # Bind to Tailscale IP
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jellyfin.rule=Host(`jellyfin.local.d4rkcyber.xyz`)"
+      - "traefik.http.routers.jellyfin.entrypoints=https"
+      - "traefik.http.routers.jellyfin.tls=true"
+      - "traefik.http.routers.jellyfin.tls.certresolver=cloudflare"
+      - "traefik.http.services.jellyfin.loadbalancer.server.port=8096"
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Dublin
+      - WEBUI_PORT=8072
+      - TORRENTING_PORT=6881
+    volumes:
+      - ./qbit_config:/config
+      - ./downloads:/downloads  # Map downloads to the main drive
+    ports:
+      - "192.168.18.19:8072:8072"  # Bind to local IP
+      - "100.72.253.35:8073:8072"  # Bind to Tailscale IP
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.qbittorrent.rule=Host(`qbittorrent.local.d4rkcyber.xyz`)"
+      - "traefik.http.routers.qbittorrent.entrypoints=https"
+      - "traefik.http.routers.qbittorrent.tls=true"
+      - "traefik.http.routers.qbittorrent.tls.certresolver=cloudflare"
+      - "traefik.http.services.qbittorrent.loadbalancer.server.port=8072"
+
+  jellyseerr:
+    image: fallenbagel/jellyseerr:2.5.1
+    container_name: jellyseerr
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=Europe/Dublin
+      - PORT=5055
+    volumes:
+      - ./jellyseerr_config:/app/config
+    ports:
+      - "192.168.18.19:5055:5055"  # Bind to local IP
+      - "100.72.253.35:5056:5055"  # Bind to Tailscale IP
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jellyseerr.rule=Host(`jellyseerr.local.d4rkcyber.xyz`)"
+      - "traefik.http.routers.jellyseerr.entrypoints=https"
+      - "traefik.http.routers.jellyseerr.tls=true"
+      - "traefik.http.routers.jellyseerr.tls.certresolver=cloudflare"
+      - "traefik.http.services.jellyseerr.loadbalancer.server.port=5055"
+
+networks:
+  proxy:
+    external: true

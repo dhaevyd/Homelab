@@ -1,0 +1,17 @@
+# Portainer Reverse Proxy
+portainer.d4rkcyber.xyz {
+    reverse_proxy portainer:9000  # Replace with the correct service name and port for Portainer
+    tls /etc/ssl/certificate.crt /etc/ssl/private.key /etc/ssl/ca_bundle.crt  # Path to your SSL certificates
+}
+
+# Stirling PDF Reverse Proxy
+pdf.d4rkcyber.xyz {
+    reverse_proxy stirling-pdf:8011  # Replace with the correct service name and port for Stirling PDF
+    tls /etc/ssl/certificate.crt /etc/ssl/private.key /etc/ssl/ca_bundle.crt  # Path to your SSL certificates
+}
+
+# Homepage Reverse Proxy
+home.d4rkcyber.xyz {
+    reverse_proxy 192.168.18.29:3000  # Replace with the correct service name and port for Stirling PDF
+    tls /etc/ssl/certificate.crt /etc/ssl/private.key /etc/ssl/ca_bundle.crt  # Path to your SSL certificates
+}

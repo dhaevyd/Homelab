@@ -1,0 +1,33 @@
+
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
+    restart: unless-stopped
+    networks:
+      - proxy
+    ports:
+      - '5678:5678'  # Bind to Tailscale IP
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin  # Replace with your desired username
+      - N8N_BASIC_AUTH_PASSWORD=password  # Replace with your desired password
+      - N8N_HOST=auto.local.d4rkcyber.xyz
+      - N8N_PROTOCOL=https
+      - N8N_PORT=5678
+      - GENERIC_TIMEZONE=Europe/Dublin
+    volumes:
+      - ./n8n_data:/home/node/.n8n
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.n8n.rule=Host(`auto.local.d4rkcyber.xyz`)"
+      - "traefik.http.routers.n8n.entrypoints=https"
+      - "traefik.http.routers.n8n.tls=true"
+      - "traefik.http.routers.n8n.tls.certresolver=cloudflare"
+      - "traefik.http.services.n8n.loadbalancer.server.port=5678"
+
+
+networks:
+  proxy:
+    name: proxy
+    external: true

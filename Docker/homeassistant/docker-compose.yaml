@@ -1,0 +1,36 @@
+version: "3.3"
+
+networks:
+  proxy:
+    external: true
+
+volumes:
+  homeassistant-config:
+
+services:
+  homeassistant:
+    container_name: homeassistant
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    cap_add:
+      - NET_ADMIN
+    privileged: true  # Full system access granted
+
+    networks:
+      - proxy
+
+    ports:
+      - "8123:8123"
+
+    volumes:
+      - homeassistant-config:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+
+    restart: unless-stopped
+
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.homeassistant.rule=Host(`assist.local.d4rkcyber.xyz`)
+      - traefik.http.routers.homeassistant.tls=true
+      - traefik.http.routers.homeassistant.service=homeassistant
+      - traefik.http.services.homeassistant.loadbalancer.server.port=8123

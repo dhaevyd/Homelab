@@ -1,0 +1,17 @@
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    command: tunnel --no-autoupdate run
+    restart: unless-stopped
+    env_file:
+      - .env  # Load environment variables (including TUNNEL_TOKEN)
+    volumes:
+      - ~/docker/cloudflared/config.yml:/etc/cloudflared/config.yml
+    networks:
+      - proxy  # Connect to the external "proxy" network
+
+networks:
+  proxy:
+    name: proxy
+    external: true  # Use an existing external network

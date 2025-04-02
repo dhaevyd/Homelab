@@ -1,0 +1,30 @@
+---
+services:
+  libreoffice:
+    image: lscr.io/linuxserver/libreoffice:latest
+    container_name: libreoffice
+    security_opt:
+      - seccomp:unconfined #optional
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - ./config:/config
+      - ./config/ssl:/opt/libreoffice/data 
+    ports:
+      - 3100:3000
+      - 3101:3001
+    restart: unless-stopped
+    networks:
+      - proxy 
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.libreoffice.rule=Host(`libreoffice.local.d4rkcyber.xyz`)"
+      - "traefik.http.routers.libreoffice.entrypoints=https"
+      - "traefik.http.routers.libreoffice.tls=true"
+      - "traefik.http.services.libreoffice.loadbalancer.server.port=3000"
+
+networks:
+  proxy:
+    external: true

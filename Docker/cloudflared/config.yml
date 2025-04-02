@@ -1,0 +1,14 @@
+tunnel: my-tunnel-id
+credentials-file: /home/cloudflared/.cloudflared/my-tunnel.json
+
+ingress:
+  - hostname: wp.d4rkcyber.xyz
+    service: http://192.168.18.19:7070
+  - hostname: blaqsamurai.com
+    service: http://192.168.18.19:7071
+  - hostname: nextcloud.d4rkcyber.xyz
+    service: http://192.168.18.19:8888  
+  - hostname: headscale.d4rkcyber.xyz
+    service: http://192.168.18.19:27896
+  - service: http_status:404
+
