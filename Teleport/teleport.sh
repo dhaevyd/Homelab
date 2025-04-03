@@ -13,13 +13,13 @@ sudo iptables -P OUTPUT ACCEPT
 sudo apt-get install iptables-persistent -y
 sudo netfilter-persistent save
 
-# # Install Tailscale
-# curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/jammy.noarmor.gpg | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
-# curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/jammy.tailscale-keyring.list | sudo tee /etc/apt/sources.list.d/tailscale.list
-# sudo apt-get update -y
-# sudo apt-get install tailscale -y
-# sudo systemctl enable --now tailscaled
-# sudo tailscale up --authkey tskey-auth
+# Install Tailscale
+curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/jammy.noarmor.gpg | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
+curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/jammy.tailscale-keyring.list | sudo tee /etc/apt/sources.list.d/tailscale.list
+sudo apt-get update -y
+sudo apt-get install tailscale -y
+sudo systemctl enable --now tailscaled
+sudo tailscale up --authkey tskey-auth
 
 
 # Setup Teleport
