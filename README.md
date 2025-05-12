@@ -11,7 +11,6 @@ Just my homelab steup
 | d4rkcyber-mini | HP EB G3 | Intel Core i3 | 8 GB  | 0.75 TiB SSD | - |
 | d4rkcloud | VM    | ARM     | 12 GB     | 50GB | Oracle Cloud |
 | d4rkcloud-2 | VM    | ARM     | 12 GB     | 50GB | Oracle Cloud |
-| d4rkcloud-server | VM    | Intel     | 1 GB      | 50GB | Oracle Cloud |
-| d4rkcloud-server-1 | VM    | Intel     | 1 GB      | 50GB | Oracle Cloud | 
+| teleport-vm | VM    | Intel     | 1 GB      | 50GB | Oracle Cloud | 
 
 --- 
