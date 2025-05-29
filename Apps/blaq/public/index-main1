@@ -15,20 +15,17 @@
     body {
       margin: 0;
       font-family: 'Urbanist', sans-serif;
-      background: #000 url('sweet-cut-bg.jpg') center/cover no-repeat;
+      background: #000;
       color: #FFFDF7;
       transition: background 0.3s, color 0.3s;
-      background-blend-mode: overlay;
-      background-color: rgba(0, 0, 0, 0.45);
     }
 
     body.light {
-      background: #FFFDF7 url('sweet-cut-bg.jpg') center/cover no-repeat;
+      background: #FFFDF7;
       color: #000;
-      background-blend-mode: overlay;
-      background-color: rgba(255, 253, 247, 0.45);
     }
 
+    /* Header */
     header {
       background: transparent;
       padding: 1rem 2rem;
@@ -85,6 +82,7 @@
       color: #00bcd4;
     }
 
+    /* Dropdown Styles */
     .dropdowns {
       position: absolute;
       top: 100%;
@@ -139,16 +137,15 @@
       pointer-events: auto;
     }
 
+    /* Main content centered */
     main {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
-      padding-top: 45vh;
+      min-height: calc(100vh - 120px);
       text-align: center;
-      padding-left: 2rem;
-      padding-right: 2rem;
+      padding: 2rem;
     }
 
     h1 {
@@ -178,15 +175,7 @@
       background: #06697b;
     }
 
-    body.light .button {
-      background: #FFFDF7;
-      color: #000;
-    }
-
-    body.light .button:hover {
-      background: #eee;
-    }
-
+    /* Theme toggle */
     .theme-switch-wrapper {
       position: fixed;
       top: 1rem;
@@ -245,6 +234,7 @@
       transform: translateX(24px);
     }
 
+    /* Footer */
     footer {
       text-align: center;
       padding: 1rem;
@@ -258,38 +248,34 @@
       color: #333;
     }
 
+    /* Mobile adjustments */
     @media (max-width: 600px) {
       .menu {
-        display: none;
+        gap: 1rem;
+        font-size: 0.9rem;
         flex-direction: column;
       }
 
-      nav.active .menu {
-        display: flex;
-      }
-
       .dropdowns {
-        position: static;
+        left: 0;
         transform: none;
-        width: 100%;
+        width: 100vw;
         border-radius: 0;
-        box-shadow: none;
-        opacity: 1;
-        pointer-events: auto;
-        display: none;
       }
 
-      .menu li.active .dropdowns {
-        display: flex;
+      main h1 {
+        font-size: 2rem;
       }
 
-      main {
-        padding-top: 20vh;
+      .button {
+        width: 100%;
+        max-width: 240px;
       }
     }
   </style>
 </head>
 <body>
+  <!-- Theme toggle -->
   <div class="theme-switch-wrapper">
     <label class="theme-switch">
       <input type="checkbox" id="theme-toggle" />
@@ -300,13 +286,14 @@
     </label>
   </div>
 
+  <!-- Header -->
   <header>
     <img src="bs-logo-dark.png" alt="Blaq Samurai Logo Dark" class="logo-img bs-logo-dark" />
     <img src="bs-logo-light.png" alt="Blaq Samurai Logo Light" class="logo-img bs-logo-light" />
-    <nav id="mobile-nav">
+    <nav>
       <ul class="menu">
         <li>
-          <a href="#" onclick="toggleDropdown(event)">Products</a>
+          <a href="#">Products</a>
           <div class="dropdowns">
             <div class="dropdown-section">
               <h3>Products</h3>
@@ -317,7 +304,7 @@
           </div>
         </li>
         <li>
-          <a href="#" onclick="toggleDropdown(event)">Collections</a>
+          <a href="#">Collections</a>
           <div class="dropdowns">
             <div class="dropdown-section">
               <h3>Collections</h3>
@@ -333,29 +320,30 @@
     </nav>
   </header>
 
+  <!-- Main -->
   <main>
     <h1>Welcome to Blaq Samurai</h1>
-    <p>Our online store is back!</p>
+    <p>
+      Our online store is back! While we are still working on enhancing our main<br />
+      website, we have brought the store back online to serve you better.<br />
+      Click the button below to shop now!<br />
+      Stay connected with us on Instagram, Twitter, and WhatsApp for updates.<br />
+      Thank you for your support!
+    </p>
     <a class="button" href="https://store.blaqsamurai.com" target="_blank">Shop Online</a>
   </main>
 
+  <!-- Footer -->
   <footer>
     Created & Hosted by D4rkcyber
   </footer>
 
+  <!-- Theme Toggle Script -->
   <script>
     const toggle = document.getElementById('theme-toggle');
     toggle.addEventListener('change', () => {
       document.body.classList.toggle('light');
     });
-
-    function toggleDropdown(event) {
-      const li = event.target.closest('li');
-      if (window.innerWidth <= 600) {
-        event.preventDefault();
-        li.classList.toggle('active');
-      }
-    }
   </script>
 </body>
 </html>

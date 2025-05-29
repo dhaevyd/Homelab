@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>React App</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+</html>
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Welcome to Blaq Samurai</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@300;600&display=swap');
+
+    body {
+      margin: 0;
+      font-family: 'Urbanist', sans-serif;
+      background-color: #000;
+      color: #FFFDF7;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      min-height: 100vh;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    main {
+      max-width: 90%;
+      padding: 2rem;
+      flex: 1;
+    }
+
+    img.logo {
+      width: min(40vw, 200px);
+      height: auto;
+      object-fit: contain;
+      display: block;
+      margin: 2rem auto 1.5rem;
+      transition: filter 0.3s ease;
+    }
+
+    h1 {
+      font-family: 'Aptos', sans-serif;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      letter-spacing: 1px;
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: #FFFDF7;
+      margin: 1rem 0 2rem;
+      line-height: 1.6;
+    }
+
+    a.button {
+      background: #04505F;
+      color: #FFFDF7;
+      padding: 0.8rem 2rem;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background 0.3s ease;
+      display: inline-block;
+    }
+
+    a.button:hover {
+      background: #033c48;
+    }
+
+    footer {
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    .theme-switch-wrapper {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      z-index: 1000;
+    }
+
+    .theme-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 26px;
+    }
+
+    .theme-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .theme-switch .slider {
+      position: absolute;
+      cursor: pointer;
+      background-color: #ccc;
+      border-radius: 34px;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      transition: 0.4s;
+    }
+
+    .theme-switch .slider:before {
+      content: "";
+      position: absolute;
+      height: 18px;
+      width: 18px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      border-radius: 50%;
+      transition: 0.4s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+    
+    .theme-switch .slider:after {
+      content: "🌙";
+      position: absolute;
+      left: 4px;
+      bottom: 4px;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      pointer-events: none;
+      transition: 0.4s;
+    }
+    
+    .theme-switch input:checked + .slider {
+      background-color: #04505F;
+    }
+    
+    .theme-switch input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+    
+    .theme-switch input:checked + .slider:after {
+      content: "☀️";
+      transform: translateX(24px);
+    }
+    
+
+/* When checked (light mode) show sun */
+.theme-switch input:checked + .slider:before {
+  content: "☀️";
+  transform: translateX(24px);
+}
+
+
+    .theme-switch input:checked + .slider {
+      background-color: #04505F;
+    }
+
+    .theme-switch input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+
+    /* Light mode styles */
+    body.light-mode {
+      background-color: #FFFDF7;
+      color: #111;
+    }
+
+    body.light-mode p {
+      color: #333;
+    }
+
+    body.light-mode a.button {
+      background: #222;
+      color: #FFFDF7;
+    }
+
+    body.light-mode a.button:hover {
+      background: #444;
+    }
+
+    body.light-mode img.logo {
+      filter: invert(1);
+    }
+  </style>
+</head>
+<body>
+  <!-- Theme Switch -->
+  <div class="theme-switch-wrapper">
+    <label class="theme-switch">
+      <input type="checkbox" id="theme-toggle" onchange="toggleTheme()" />
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <main>
+    <img src="bs-logo-1.png" alt="Blaq Samurai Logo" class="logo" />
+    <h1>Welcome to Blaq Samurai</h1>
+    <p>
+      Our online store is back! 🎉 While we are still working on enhancing our main<br/>
+      website, we have brought the store back online to serve you better.<br/>
+      Click the button below to shop now!<br/>
+      Stay connected with us on Instagram, Twitter, and WhatsApp for updates.<br/>
+      Thank you for your support!
+    </p>
+    <a class="button" href="https://store.blaqsamurai.com" target="_blank">Shop Online</a>
+  </main>
+
+  <footer>
+    Created & Hosted by D4rkcyber
+  </footer>
+
+  <script>
+    const body = document.body;
+    const toggleCheckbox = document.getElementById('theme-toggle');
+
+    function toggleTheme() {
+      body.classList.toggle('light-mode');
+      localStorage.setItem('theme', body.classList.contains('light-mode') ? 'light' : 'dark');
+    }
+
+    // Load saved theme
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'light') {
+        body.classList.add('light-mode');
+        toggleCheckbox.checked = true;
+      }
+    });
+  </script>
+</body>
+</html>
