@@ -1,0 +1,54 @@
+# ========================
+# 🔐 Secrets & Credentials
+# ========================
+*.env
+.env*
+*.key
+*.pem
+*.crt
+*.cert
+secrets.yaml
+config.yml      # if you store API keys/configs here
+**/private.key
+**/noise_private.key
+
+# ========================
+# 🐍 Python
+# ========================
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+
+# ========================
+# 🐳 Docker Runtime Data
+# ========================
+**/data/
+**/work/
+**/db/
+**/logs/
+**/cache/
+**/#*                 # Temporary InnoDB folders
+**/#innodb_*/         # Common MySQL volume data
+*.save*              # docker-compose.yaml.save etc.
+
+# ========================
+# 🧰 Node / JS (if used)
+# ========================
+node_modules/
+
+# ========================
+# 🧹 System / IDE Junk
+# ========================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.bak
+
+# ========================
+# 📦 Optional: Backups
+# ========================
+*.tar
+*.tar.gz
+*.zip
