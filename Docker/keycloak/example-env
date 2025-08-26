@@ -1,0 +1,5 @@
+KC_BOOTSTRAP_ADMIN_USERNAME="admin"
+KC_BOOTSTRAP_ADMIN_PASSWORD="long-secure-password"
+KC_DB_USERNAME="postgres"
+KC_DB_PASSWORD="long-secure-password"
+KC_DB_NAME="keycloak"

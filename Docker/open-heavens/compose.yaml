@@ -1,0 +1,12 @@
+services:
+  daily-devotional:
+    container_name: open-heavens
+    image: ghcr.io/dhaevyd/daily-devotional:1.0.0
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ~/.oci:/root/.oci
+    environment:
+      DISCORD_WEBHOOK: ${DISCORD_WEBHOOK}
+    env_file: .env
+    working_dir: /app

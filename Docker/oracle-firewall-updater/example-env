@@ -1,0 +1,4 @@
+VCN_ID=can-be-found-in-oracle-dashbpard
+SECURITY_LIST_ID=can-be-found-in-oracle-dashbpard
+
+OCI_CONFIG_PATH="~/.oci/config"

@@ -1,0 +1,16 @@
+services:
+  cloudflare_ip_updater:
+    container_name: cloudflare_ip_updater
+    image: ghcr.io/dhaevyd/cloudflare-ip-updater:2.1.0
+    security_opt:
+      - no-new-privileges:true
+    env_file: .env
+    environment:
+      # Required Cloudflare / optional Discord
+      - CLOUDFLARE_ZONE_ID
+      - CLOUDFLARE_API_TOKEN
+      - CLOUDFLARE_RECORD_ID
+      - DISCORD_WEBHOOK_URL
+    volumes:
+      # Persist last IP and logs between runs
+      - ./data:/app/data

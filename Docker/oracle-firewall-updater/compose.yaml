@@ -1,0 +1,16 @@
+services:
+  firewall-updater:
+    container_name: oracle-firewall-updater
+    image: ghcr.io/dhaevyd/firewall-updater:0.1.1
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ~/.oci:/root/.oci
+    environment:
+      # optional override, can be left out if using default
+      OCI_CONFIG_PATH: ${OCI_CONFIG_PATH}
+      VCN_ID: ${VCN_ID}
+      SECURITY_LIST_ID: ${SECURITY_LIST_ID}
+    env_file: .env
+    working_dir: /app
+

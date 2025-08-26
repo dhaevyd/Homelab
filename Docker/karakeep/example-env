@@ -1,0 +1,4 @@
+KARAKEEP_VERSION=0.25.0
+NEXTAUTH_SECRET=some-secure-password
+MEILI_MASTER_KEY=morty-have-you-seen-rick?
+NEXTAUTH_URL=http://localhost:3000

@@ -1,0 +1,22 @@
+# Webhook URL for notifications (Discord, Slack, etc.)
+WEBHOOK_URL=https://your.webhook.url/here
+
+# Portainer API URL (default)
+PORTAINER_URL=https://portainer:9000/api
+
+# Portainer credentials (use either API key or username/password)
+PORTAINER_USERNAME=
+PORTAINER_PASSWORD=
+PORTAINER_API_KEY="key"
+
+# Optional friendly name to identify this node in notifications
+HOSTNAME=d4rkcyber
+
+# Alternative Discord webhook URL (if needed)
+DISCORD_WEBHOOK=
+
+# Alternative Portainer API URL (optional)
+PORTAINER_API_URL=
+
+# Logging level (info, debug, warn, error)
+LOG_LEVEL=info

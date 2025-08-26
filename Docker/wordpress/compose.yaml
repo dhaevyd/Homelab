@@ -1,0 +1,38 @@
+services:
+  # WordPress instance
+  wordpress_wp:
+    image: wordpress
+    container_name: wordpress_app
+    restart: always
+    ports:
+      - "6060:80"
+    environment:
+      WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST}
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME}
+    volumes:
+      - ./wordpress_app:/var/www/html
+    networks:
+      - proxy
+    depends_on:
+      - wordpress_db
+
+  # MySQL database
+  wordpress_db:
+    image: mysql:8.0
+    container_name: wordpress_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - ./wordpress_dp:/var/lib/mysql
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    driver: bridge

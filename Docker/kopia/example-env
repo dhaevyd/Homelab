@@ -1,0 +1,3 @@
+KOPIA_REPOSITORY_PASSWORD=very-secure-password
+KOPIA_USER=dami
+KOPIA_USER_PASSWORD=some-secure-password

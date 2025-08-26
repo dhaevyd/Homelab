@@ -1,0 +1,9 @@
+WORDPRESS_DB_HOST=wordpress_db
+WORDPRESS_DB_USER=dami
+WORDPRESS_DB_PASSWORD=verystrongpassword
+WORDPRESS_DB_NAME=wp_db
+
+MYSQL_DATABASE=wp_db
+MYSQL_USER=dami
+MYSQL_PASSWORD=verystrongpassword
+MYSQL_ROOT_PASSWORD=evenstrongerpassword

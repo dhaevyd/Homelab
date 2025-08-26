@@ -1,0 +1,5 @@
+CLOUDFLARE_ZONE_ID=can-be-found-in-cloudflare-dashboard
+CLOUDFLARE_API_TOKEN=can-be-created-in-cloudflare-dashboard
+CLOUDFLARE_RECORD_ID=can-be-found-in-cloudflare-dashboard
+# Optional - for Discord notifications
+DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...

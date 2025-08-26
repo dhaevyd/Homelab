@@ -1,0 +1,5 @@
+ADGUARD_USERNAME='dami'
+ADGUARD_PASSWORD='secure-password'
+ADGUARD_USERNAME2='dami'
+ADGUARD_PASSWORD2='another-secure-password'
+ADGUARD_SYNC_REPLICA2_URL='http://adguard-srver-ip'

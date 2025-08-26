@@ -1,15 +1,15 @@
 ---
 services:
   firefox:
-    image: linuxserver/firefox:136.0.2 #lscr.io/linuxserver/firefox:latest
+    image: lscr.io/linuxserver/firefox:latest
     container_name: firefox
     security_opt:
       - seccomp:unconfined #optional
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PUID=1001
+      - PGID=1001
       - TZ=Etc/UTC
-      - FIREFOX_CLI=https://homepage.d4rkcyber.xyz #optional
+      - FIREFOX_CLI=https://ff.d4rkcyber.xyz #optional
     volumes:
       - ./config:/config
     labels:
@@ -17,11 +17,11 @@ services:
       - "traefik.http.routers.firefox.rule=Host(`ff.local.d4rkcyber.xyz`)"
       - "traefik.http.routers.firefox.entrypoints=https"
       - "traefik.http.routers.firefox.tls=true"
-      - "traefik.http.services.firefox.loadbalancer.server.port=3001"
+      - "traefik.http.services.firefox.loadbalancer.server.port=3033"
       - "traefik.http.services.firefox.loadbalancer.server.scheme=https" # for services with self signed certs
     ports:
       - 3033:3000
-      - 3001:3001
+      - 3011:3001
     shm_size: "2gb"
     restart: unless-stopped
     dns:

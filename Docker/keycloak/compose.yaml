@@ -1,0 +1,54 @@
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.3.2
+    container_name: keycloak
+    command: ["start"]
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - proxy
+    environment:
+      KC_HTTP_ENABLED: "true"
+      KC_PROXY_HEADERS: "xforwarded"
+      KC_HOSTNAME: "sso.cloud.d4rkcyber.xyz"
+      KC_CACHE: local
+      # KC_CACHE_STACK: simple
+      KC_DB: postgres
+      KC_DB_URL_HOST: key_postgres
+      KC_DB_URL_PORT: 5432
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_USERNAME: ${KC_DB_USERNAME}
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD}
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
+    volumes:
+      - ./keycloak-data:/opt/keycloak/data
+      - ./keycloak-tmp:/opt/keycloak/data/tmp
+
+    depends_on:
+      - key_postgres
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.sso.rule=Host(`sso.cloud.d4rkcyber.xyz`)"
+      - "traefik.http.routers.sso.entrypoints=https"
+      - "traefik.http.routers.sso.tls=true"
+      - "traefik.http.routers.sso.tls.certresolver=cloudflare"
+      - "traefik.http.services.sso.loadbalancer.server.port=8080"
+
+  key_postgres:
+    image: postgres:latest
+    container_name: key_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${KC_DB_USERNAME}
+      POSTGRES_PASSWORD: ${KC_DB_PASSWORD}
+      POSTGRES_DB: keycloak
+    networks:
+      - proxy
+    volumes:
+      - ./keycloak-db-data:/var/lib/postgresql/data
+
+networks:
+  proxy:
+    external: true

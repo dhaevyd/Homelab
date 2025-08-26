@@ -1,0 +1,15 @@
+services:
+  portainer-multi-notif:
+    image: ghcr.io/dhaevyd/portainer-multi-notif:3.0.1
+    container_name: portainer-multi
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro  # Needed if Portainer uses local Docker endpoint
+
+networks:
+  proxy:
+    external: true

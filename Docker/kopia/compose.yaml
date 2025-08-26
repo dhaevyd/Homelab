@@ -1,0 +1,46 @@
+services:
+  kopia:
+      image: ghcr.io/zazathomas/kopia:0.19.0
+      hostname: kopia
+      container_name: kopia
+      restart: unless-stopped
+      ports:
+          - 51515:51515
+      labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.kopia.rule=Host(`kopia.local.d4rkcyber.xyz`)"
+      - "traefik.http.routers.kopia.entrypoints=https"
+      - "traefik.http.routers.kopia.tls=true"
+      - "traefik.http.services.kopia.loadbalancer.server.port=51515"
+      env_file: .env
+      environment:
+          - KOPIA_PASSWORD=${KOPIA_REPOSITORY_PASSWORD}
+          - TZ=Europe/Dublin
+      volumes:
+          # Mount local folders needed by kopia
+          - ./config:/app/config
+          - ./cache:/app/cache
+          - /home/dami/docker:/data
+          # For backup restore export
+#          - /home/dami/backup-export:/export
+          # Script
+          - ./docker.sh:/docker.sh:ro
+          # Docker UNIX socket
+          - /var/run/docker.sock:/var/run/docker.sock:rw
+          - /home/dami/.ssh/known_hosts:/home/root/.ssh/known_hosts
+      command:
+          - server
+          - start
+          - --insecure
+          - --address=0.0.0.0:51515
+          - --disable-csrf-token-checks
+          - --enable-actions
+          - --server-username=${KOPIA_USER}
+          - --server-password=${KOPIA_USER_PASSWORD}
+          - --password=${KOPIA_USER_PASSWORD} # For existing backup repository
+      networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
