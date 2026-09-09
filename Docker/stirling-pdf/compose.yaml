@@ -1,7 +1,7 @@
 services:
   stirling-pdf:
     container_name: stirling-pdf
-    image: frooodle/s-pdf:0.42.0
+    image: frooodle/s-pdf:2.14.0
     restart: unless-stopped
     ports:
       - '8051:8080'

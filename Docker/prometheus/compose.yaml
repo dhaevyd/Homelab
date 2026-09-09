@@ -1,9 +1,8 @@
----
 services:
   prometheus:
-    image: prom/prometheus:v3.0.1
+    image: dhi.io/prometheus:3 #prom/prometheus:v3.13.2
     container_name: prometheus
-    user: "1000"
+    user: "1001"
     environment:
       - TZ=Europe/Dublin
     command:
@@ -13,7 +12,7 @@ services:
       - '--storage.tsdb.retention.time=7d'
     volumes:
       - ./prometheus/:/etc/prometheus
-      - ./prom_data/:/prometheus
+      - ./prom_data/:/data
     ports:
       - 9090:9090
     restart: unless-stopped
@@ -21,7 +20,7 @@ services:
        - proxy
   
   node-exporter:
-    image: prom/node-exporter:v1.8.2
+    image: dhi.io/node-exporter:1 #prom/node-exporter:v1.8.2
     container_name: node-exporter
     networks:
       - proxy
@@ -38,16 +37,18 @@ services:
       - --collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($|/)"
 
 
+  blackbox-exporter:
+    image: prom/blackbox-exporter:v0.27.0
+    container_name: blackbox-exporter
+    command:
+      - --config.file=/etc/blackbox_exporter/config.yml
+    volumes:
+      - ./blackbox/:/etc/blackbox_exporter:ro
+    networks:
+      - proxy
+    restart: unless-stopped
+
 networks:
   proxy:
     name: proxy
     external: true
-
-#This configuration file is used to define the services that will be running in the Prometheus stack.
-#The services are defined in the services section, where each service is defined by a name and a set of configuration options.
-#This stack would be used to monitor the health of the services running in the stack.
-#copy the content of the file and paste it in the compose.yaml file in the prometheus directory.
-#run the command docker-compose up -d to start the services.
-#The services will be started in the background and can be accessed using the browser by visiting the URL http://localhost:9090.
-#The Prometheus service will be running on port 9090 and the Node Exporter service will be running on port 9100.
-#The Prometheus service will be used to monitor the health of the services running in the stack, while the Node Exporter service will be used to collect metrics from the host machine.

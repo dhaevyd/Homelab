@@ -1,0 +1,34 @@
+services:
+  minio:
+    image: quay.io/minio/minio:RELEASE.2025-04-22T22-12-26Z
+    container_name: minio
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    volumes:
+      - /mnt/samba/minio_data:/data
+    env_file: .env
+    ports:
+      - 9003:9000
+      - 9004:9001
+    networks:
+      - proxy
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.minio.rule=Host(`s3.local.d4rkcyber.xyz`)"
+      - "traefik.http.routers.minio.entrypoints=https"
+      - "traefik.http.routers.minio.tls=true"
+      - "traefik.http.services.minio.loadbalancer.server.port=9001"
+      - "traefik.http.routers.minio.service=minio" # new, this is needed when routing multiple hostnames for different ports
+      # API
+      - "traefik.http.routers.minio-api.rule=Host(`api-s3.local.d4rkcyber.xyz`)"
+      - "traefik.http.routers.minio-api.entrypoints=https"
+      - "traefik.http.routers.minio-api.tls=true"
+      - "traefik.http.services.minio-api.loadbalancer.server.port=9000"
+      - "traefik.http.routers.minio-api.service=minio-api" # new, this is needed when routing multiple hostnames for different ports
+
+networks:
+  proxy:
+    external: true

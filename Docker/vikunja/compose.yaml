@@ -1,0 +1,47 @@
+services:
+  vikunja:
+      image: vikunja/vikunja:latest
+      container_name: vikunja
+      environment:
+          VIKUNJA_SERVICE_PUBLICURL: ${VIKUNJA_PUBLIC_URL}
+          VIKUNJA_DATABASE_HOST: ${VIKUNJA_DB_HOST}
+          VIKUNJA_DATABASE_PASSWORD: ${VIKUNJA_DB_PASSWORD}
+          VIKUNJA_DATABASE_TYPE: ${VIKUNJA_DB_TYPE}
+          VIKUNJA_DATABASE_USER: ${VIKUNJA_DB_USER}
+          VIKUNJA_DATABASE_DATABASE: ${VIKUNJA_DB_NAME}
+          VIKUNJA_SERVICE_JWTSECRET: ${VIKUNJA_JWT_SECRET}
+          VIKUNJA_SERVICE_ENABLEREGISTRATION: 0
+      ports:
+          - 3456:3456
+      volumes:
+          - ./files:/app/vikunja/files
+      networks:
+          - proxy
+      depends_on:
+          db:
+              condition: service_healthy
+      restart: unless-stopped
+
+  db:
+      image: mariadb:10
+      container_name: vikunja_db
+      command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+      environment:
+          MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+          MYSQL_USER: ${MYSQL_USER}
+          MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+          MYSQL_DATABASE: ${MYSQL_DATABASE}
+      volumes:
+          - ./db:/var/lib/mysql
+      restart: unless-stopped
+      healthcheck:
+          test: ["CMD-SHELL", "mysqladmin ping -h localhost -u $$MYSQL_USER --password=$$MYSQL_PASSWORD"]
+          interval: 2s
+          start_period: 30s
+      networks:
+          - proxy
+
+networks:
+  proxy:
+    name: proxy
+    external: true

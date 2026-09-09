@@ -1,0 +1,62 @@
+global:
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  evaluation_interval: 15s
+alerting:
+  alertmanagers:
+    - static_configs:
+      - targets: []
+      scheme: http
+      timeout: 10s
+      api_version: v2
+scrape_configs:
+  - job_name: prometheus
+    honor_timestamps: true
+    scrape_interval: 15s
+    scrape_timeout: 10s
+    metrics_path: /metrics
+    scheme: http
+    static_configs:
+      - targets:
+        - localhost:9090
+  - job_name: 'docker-vm'
+    static_configs:
+      - targets:
+        - 192.168.2.203:9100
+  - job_name: uss-ceritos
+    static_configs:
+    - targets: ['192.168.2.28:9100']
+  #- job_name: intel-node
+  # static_configs:
+  #   - targets: ['192.168.0.59:9100']
+  #- job_name: cadvisor-intel-node
+  # static_configs:
+  #   - targets: ['192.168.0.59:8009']
+  #- job_name: cadvisor-docker-vm
+  # static_configs:
+    # - targets: ['192.168.2.203:8009']
+  - job_name: traefik
+    static_configs:
+      - targets: ['192.168.2.203:8082']
+
+  - job_name: blackbox-http
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+        - https://example.domain.com
+        labels:
+          service: example
+      - targets:
+        - https://example2.domain.com
+        labels:
+          service: example2
+
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115

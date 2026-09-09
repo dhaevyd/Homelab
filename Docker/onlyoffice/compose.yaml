@@ -1,0 +1,83 @@
+services:
+  onlyoffice-documentserver:
+    image: onlyoffice/documentserver:latest
+    container_name: onlyoffice-documentserver
+    extra_hosts:
+      - "nextcloud.example.com:192.168.2.21"
+      - "onlyoffice.example.com:192.168.2.203"
+      - "only-office.example.com:192.168.2.203"
+    depends_on:
+      - onlyoffice-postgresql
+      - onlyoffice-rabbitmq
+    environment:
+      - DB_TYPE=postgres
+      - DB_HOST=onlyoffice-postgresql
+      - DB_PORT=5432
+      - DB_NAME=onlyoffice
+      - DB_USER=onlyoffice
+      - AMQP_URI=amqp://guest:guest@onlyoffice-rabbitmq
+      - JWT_ENABLED=true
+      - JWT_SECRET=${JWT_SECRET}
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+    ports:
+      - '8080:80'
+      - '7443:443'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1/info/info.json"]
+      interval: 30s
+      retries: 5
+      start_period: 60s
+      timeout: 10s
+    stdin_open: true
+    restart: unless-stopped
+    stop_grace_period: 60s
+    volumes:
+      - ./data:/var/www/onlyoffice/Data
+      - ./logs:/var/log/onlyoffice
+      - ./cache:/var/lib/onlyoffice/documentserver/App_Data/cache/files
+    #  - ./config/ds-example.conf:/etc/nginx/includes/ds-example.conf:ro
+      - ./fonts:/usr/share/fonts/custom:ro
+    networks:
+      - proxy
+
+  onlyoffice-rabbitmq:
+    container_name: onlyoffice-rabbitmq
+    image: rabbitmq:3
+    restart: unless-stopped
+    expose:
+      - '5672'
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "status"]
+      interval: 10s
+      retries: 3
+      start_period: 10s
+      timeout: 10s
+    volumes:
+      - ./onlyoffice/rabbitmq:/var/lib/rabbitmq
+    networks:
+      - proxy
+
+  onlyoffice-postgresql:
+    container_name: onlyoffice-postgresql
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=onlyoffice
+      - POSTGRES_USER=onlyoffice
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    restart: unless-stopped
+    expose:
+      - '5432'
+    volumes:
+      - ./onlyoffice/postgresql:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U onlyoffice"]
+      interval: 10s
+      retries: 3
+      start_period: 10s
+      timeout: 10s
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

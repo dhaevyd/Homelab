@@ -1,0 +1,37 @@
+services:
+  grafana:
+    image: dhi.io/grafana:13
+#    image: grafana/grafana:main
+    container_name: grafana
+    # user: "1001"
+    environment:
+      - TZ=Europe/Dublin
+    volumes:
+      - ./grafana:/var/lib/grafana
+    ports:
+      - 3002:3000
+    restart: unless-stopped
+    networks:
+       - proxy
+
+  grafana-mcp:                                                                                                                                                                                                                                      
+    image: mcp/grafana:latest
+    container_name: grafana-mcp                                                                                                                                                                                                                     
+    restart: unless-stopped                                                                                                                                                                                                                         
+    command:
+      - "--transport"
+      - "streamable-http"                                                                                                                                                                                                        
+      - "--allowed-hosts"                                                                                                                                                                                                                           
+      - "grafana-mcp.example.com"                                                                                                                                                                                                                 
+    environment:                                                                                                                                                                                                                                    
+      GRAFANA_URL: https://grafana.example.com                                                                                                                                                                                                    
+      GRAFANA_SERVICE_ACCOUNT_TOKEN: ${GRAFANA_SERVICE_ACCOUNT_TOKEN}                                                                                                                                                                               
+    ports:                                                                                                                                                                                                                                          
+      - "3007:8000"                                                                                                                                                                                                                                 
+    networks:                                                                                                                                                                                                                                       
+      - proxy 
+
+networks:
+  proxy:
+    name: proxy
+    external: true

@@ -1,0 +1,31 @@
+services:
+  keila:
+    image: pentacent/keila:latest
+    container_name: keila
+    restart: unless-stopped
+    ports:
+      - "23000:4000"
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    volumes:
+      - ./uploads:/uploads
+    networks:
+      - proxy
+
+
+  postgres:
+    image: postgres:16
+    container_name: keila_postgres
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

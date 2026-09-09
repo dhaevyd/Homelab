@@ -1,0 +1,70 @@
+services:
+  audiobookshelf:
+    image: ghcr.io/advplyr/audiobookshelf:2.33.1
+    container_name: audiobookshelf
+    ports:
+      - "13378:80"
+    volumes:
+      - ./data/audiobooks:/audiobooks
+      - ./data/podcasts:/podcasts
+      - ./data/config/abs:/config
+      - ./data/metadata:/metadata
+    environment:
+      - TZ=Europe/Dublin
+    restart: unless-stopped
+    networks:
+      - proxy
+
+  storyteller:
+    image: registry.gitlab.com/storyteller-platform/storyteller:latest
+    container_name: storyteller
+    ports:
+      - "7080:8001"
+    volumes:
+      - ./data/ebooks:/books:ro
+      - ./data/config/storyteller:/config
+      - ./data/storyteller:/data
+    environment:
+      - TZ=Europe/Dublin
+      - STORYTELLER_SECRET_KEY= ${STORYTELLER_SECRET_KEY}
+    restart: unless-stopped
+    networks:
+      - proxy
+
+  calibre:
+    image: linuxserver/calibre:9.8.0
+    container_name: calibre
+    ports:
+      - "8084:8181"
+    volumes:
+      - ./data/config/calibre-desktop:/config
+      - ./data/ebooks:/books
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ=Europe/Dublin
+    restart: unless-stopped
+    networks:
+      - proxy
+
+  calibre-web:
+    image: linuxserver/calibre-web:0.6.27
+    container_name: calibre_web
+    ports:
+      - "8083:8083"
+    volumes:
+      - ./data/config/calibre:/config
+      - ./data/ebooks:/books
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ=Europe/Dublin
+    restart: unless-stopped
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    name: proxy
+    external: true
+  

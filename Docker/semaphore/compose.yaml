@@ -1,0 +1,39 @@
+services:
+  semaphore:
+      image: semaphoreui/semaphore:v2.16.43
+      container_name: semaphore
+      restart: unless-stopped
+      env_file: .env
+      volumes:
+          - /home/dami/.ssh:/root/.ssh:ro
+          - ./semaphore_data:/var/lib/semaphore
+      networks:
+          - proxy
+      ports:
+          - 3330:3000
+      labels:
+          - "traefik.enable=true"
+          - "traefik.http.routers.semaphore.rule=Host(`semaphore.local.d4rkcyber.xyz`)"
+          - "traefik.http.routers.semaphore.tls=true"
+          - "traefik.http.services.semaphore.loadbalancer.server.port=3000"
+          - "traefik.http.services.semaphore.loadbalancer.server.scheme=http"
+
+
+  semaphore-runner:
+      image: semaphoreui/runner:v2.16.43
+      container_name: semaphore-runner
+      restart: unless-stopped
+      env_file: .env
+      environment:
+          SEMAPHORE_RUNNER_PRIVATE_KEY_FILE: /var/lib/semaphore/runner.key
+          SEMAPHORE_WEB_ROOT: http://semaphore:3000
+          SEMAPHORE_RUNNER_REGISTRATION_TOKEN: ${SEMAPHORE_RUNNER_REGISTRATION_TOKEN}
+      volumes:
+          - ./semaphore_data:/var/lib/semaphore
+      networks:
+          - proxy
+
+networks:
+  proxy:
+      name: proxy
+      external: true 

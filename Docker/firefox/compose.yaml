@@ -1,37 +1,28 @@
----
 services:
   firefox:
-    image: lscr.io/linuxserver/firefox:latest
-    container_name: firefox
-    security_opt:
-      - seccomp:unconfined #optional
-    environment:
-      - PUID=1001
-      - PGID=1001
-      - TZ=Etc/UTC
-      - FIREFOX_CLI=https://ff.d4rkcyber.xyz #optional
-    volumes:
-      - ./config:/config
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.firefox.rule=Host(`ff.local.d4rkcyber.xyz`)"
-      - "traefik.http.routers.firefox.entrypoints=https"
-      - "traefik.http.routers.firefox.tls=true"
-      - "traefik.http.services.firefox.loadbalancer.server.port=3033"
-      - "traefik.http.services.firefox.loadbalancer.server.scheme=https" # for services with self signed certs
+    image: jlesage/firefox:latest
+    container_name: firefox-vnc
     ports:
-      - 3033:3000
-      - 3011:3001
-    shm_size: "2gb"
+      - "5800:5800"  # Web browser access
+      - "5900:5900"  # VNC client access
+    volumes:
+      - ./firefox_config:/config
+      - ./firefox_downloads:/config/downloads
+    environment:
+      - VNC_PASSWORD=damilola  # Optional
+      - SECURE_CONNECTION=0    # Set to 1 for encrypted connection [10]
     restart: unless-stopped
-    dns:
-      - 192.168.18.40
-      - 127.0.0.53
-      - 8.8.8.8
-      - 1.1.1.1
     networks:
       - proxy
+    shm_size: '2gb'            # Prevents browser crashes
+    mem_limit: 3g              # Caps max memory usage
+    mem_reservation: 1g    
+    dns:
+      - 192.168.2.1
+      - 8.8.8.8
+      - 1.1.1.1
 
 networks:
   proxy:
+    name: proxy
     external: true

@@ -19,6 +19,7 @@ services:
       - ./config:/app/config
       - ./images:/app/public/images
       - ./icons:/app/public/icons
+      - /var/run/docker.sock:/var/run/docker.sock
     env_file: .env
     environment:
       - HOMEPAGE_VAR_TRAEFIK_USERNAME=${HOMEPAGE_VAR_TRAEFIK_USERNAME}
@@ -29,6 +30,8 @@ services:
       - TZ=Europe/Dublin
     dns:
       - 1.1.1.1
+      - 8.8.8.8
+      - 192.168.2.53
 
 networks:
   proxy:

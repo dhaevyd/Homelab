@@ -1,0 +1,11 @@
+services:
+  duckdns:
+    image: linuxserver/duckdns
+    container_name: duckdns
+    environment:
+      - PUID=1000               # Your user ID
+      - PGID=1000               # Your group ID
+      - TZ=Europe/London         # Replace with your timezone (e.g., Europe/London)
+      - SUBDOMAINS=d4rkcyber     # Replace with your DuckDNS subdomain
+      - TOKEN=xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx # Replace with your DuckDNS token
+    restart: unless-stopped

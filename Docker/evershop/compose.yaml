@@ -1,0 +1,39 @@
+services:
+  evershop:
+    image: evershop/evershop:latest
+    container_name: evershop
+    restart: always
+    environment:
+      DB_HOST: evershop-db
+      DB_PORT: 5432
+      DB_PASSWORD: postgres
+      DB_USER: postgres
+      DB_NAME: postgres
+    networks:
+      - proxy
+    depends_on:
+      - evershop-db
+    ports:
+      - 3090:3000
+  
+  #The postgres database: 
+  evershop-db:
+    image: postgres:16
+    container_name: evershop-postgres
+    restart: unless-stopped
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    name: proxy
+    external: true
+

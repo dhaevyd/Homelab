@@ -1,0 +1,68 @@
+services:
+  ovumcy:
+    image: ghcr.io/dhaevyd/ovumcy-web:0.8.5
+    #pull_policy: always
+    container_name: ovumcy
+    env_file:
+      - ./.env
+    environment:
+      - TZ=${TZ}
+      - DEFAULT_LANGUAGE=${DEFAULT_LANGUAGE}
+      - DB_DRIVER=${DB_DRIVER}
+      - DB_PATH=/app/data/ovumcy.db
+      - DATABASE_URL=${DATABASE_URL}
+      - COOKIE_SECURE=${COOKIE_SECURE}
+      - OIDC_ENABLED=${OIDC_ENABLED}
+      - OIDC_ISSUER_URL=${OIDC_ISSUER_URL}
+      - OIDC_CLIENT_ID=${OIDC_CLIENT_ID}
+      - OIDC_CLIENT_SECRET=${OIDC_CLIENT_SECRET}
+      - OIDC_REDIRECT_URL=${OIDC_REDIRECT_URL}
+      - OIDC_CA_FILE=${OIDC_CA_FILE}
+      - OIDC_LOGIN_MODE=${OIDC_LOGIN_MODE}
+      - OIDC_AUTO_PROVISION=${OIDC_AUTO_PROVISION}
+      - OIDC_AUTO_PROVISION_ALLOWED_DOMAINS=${OIDC_AUTO_PROVISION_ALLOWED_DOMAINS}
+      - OIDC_LOGOUT_MODE=${OIDC_LOGOUT_MODE:-local}
+      - OIDC_POST_LOGOUT_REDIRECT_URL=${OIDC_POST_LOGOUT_REDIRECT_URL}
+      - RATE_LIMIT_LOGIN_MAX=${RATE_LIMIT_LOGIN_MAX}
+      - RATE_LIMIT_LOGIN_WINDOW=${RATE_LIMIT_LOGIN_WINDOW}
+      - RATE_LIMIT_FORGOT_PASSWORD_MAX=${RATE_LIMIT_FORGOT_PASSWORD_MAX}
+      - RATE_LIMIT_FORGOT_PASSWORD_WINDOW=${RATE_LIMIT_FORGOT_PASSWORD_WINDOW}
+      - RATE_LIMIT_API_MAX=${RATE_LIMIT_API_MAX}
+      - RATE_LIMIT_API_WINDOW=${RATE_LIMIT_API_WINDOW}
+      - TRUST_PROXY_ENABLED=${TRUST_PROXY_ENABLED}
+      - PROXY_HEADER=${PROXY_HEADER}
+      - TRUSTED_PROXIES=${TRUSTED_PROXIES}
+    init: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    tmpfs:
+      - /tmp
+    volumes:
+      - ./ovumcy_data:/app/data
+      # Optional: mount a file-backed app secret and set SECRET_KEY_FILE=/run/secrets/ovumcy_secret_key in .env
+      - ./secrets/ovumcy_secret_key:/run/secrets/ovumcy_secret_key:ro
+      # Optional: mount a private OIDC CA bundle and set OIDC_CA_FILE=/run/certs/oidc-provider-ca.pem in .env
+      # - ./certs/oidc-provider-ca.pem:/run/certs/oidc-provider-ca.pem:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:${PORT:-8080}/healthz >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    ports:
+      - 1408:8080
+    networks:
+      - proxy
+    restart: unless-stopped
+
+networks:
+  proxy:
+    external: true 
+

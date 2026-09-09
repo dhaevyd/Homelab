@@ -1,0 +1,16 @@
+services:
+  cloudflare-ddns:
+    image: favonia/cloudflare-ddns:edge-alpine
+    container_name: cloudflare-ddns
+    network_mode: host
+    restart: unless-stopped # Restart the updater after reboot
+    user: "1001:1001"
+    read_only: true
+    cap_drop: [all]
+    security_opt: [no-new-privileges:true]
+    env_file: .env
+    environment:
+      - CLOUDFLARE_API_TOKEN=${CF_DNS_API_TOKEN}
+      - DOMAINS=example.domain.com,example2.domain.com
+      - PROXIED=false
+      - IP6_PROVIDER=none

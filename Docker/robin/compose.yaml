@@ -1,0 +1,24 @@
+services:
+  robin:
+    image: apurvsg/robin:latest
+    container_name: robin-ui
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./.env:/app/.env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: ["ui", "--ui-port", "8501", "--ui-host", "0.0.0.0"]
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.robin.rule=Host(`robin.local.d4rkcyber.xyz`)"
+      - "traefik.http.routers.robin.tls=true"
+      - "traefik.http.routers.robin.tls.certresolver=cloudflare"
+      - "traefik.http.services.robin.loadbalancer.server.port=8501"
+
+networks:
+  proxy:
+    external: true  

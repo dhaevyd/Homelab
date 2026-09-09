@@ -1,0 +1,21 @@
+services:
+  budge:
+    image: lscr.io/linuxserver/budge:latest
+    container_name: budge
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ=Etc/UTC
+    volumes:
+      - ./config:/config
+    ports:
+      - 1738:5000
+      - 88:80
+      - 456:443
+    restart: unless-stopped
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

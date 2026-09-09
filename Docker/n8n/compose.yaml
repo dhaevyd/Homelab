@@ -7,7 +7,7 @@ services:
     networks:
       - proxy
     ports:
-      - '5678:5678'  # Bind to Tailscale IP
+      - '5678:5678' 
     environment:
       - N8N_BASIC_AUTH_ACTIVE=true
       - N8N_BASIC_AUTH_USER=admin  # Replace with your desired username

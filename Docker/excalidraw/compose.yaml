@@ -1,0 +1,14 @@
+services:
+  excalidraw:
+    container_name: excalidraw
+    image: docker.io/excalidraw/excalidraw:latest
+    ports:
+      - 8180:80
+    restart: unless-stopped
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    name: proxy
+    external: true

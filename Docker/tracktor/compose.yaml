@@ -1,0 +1,17 @@
+services:
+  tracktor:
+    image: ghcr.io/dhaevyd/tracktor:1.3.3
+    container_name: tracktor-app
+    restart: always
+    env_file: .env
+    ports:
+      - "4333:3000"
+    volumes:
+      - ./tracktor-data:/data/
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    name: proxy
+    external: true

@@ -9,13 +9,7 @@ services:
     restart: unless-stopped
     networks:
       - proxy
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.dozzle.rule=Host(`dozzle.local.d4rkcyber.xyz`)"
-      - "traefik.http.routers.dozzle.entrypoints=https"
-      - "traefik.http.routers.dozzle.tls=true"
-      - "traefik.http.routers.dozzle.tls.certresolver=cloudflare"
-      - "traefik.http.services.dozzle.loadbalancer.server.port=8080"
+
 
 networks:
   proxy:

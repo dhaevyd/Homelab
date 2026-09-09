@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   whoami:
     image: containous/whoami@sha256:3c935b9746f80ae5bad92a2b6f917ec9348977f299cdf361b6672d8ebd1fb755
